@@ -1,0 +1,15 @@
+dist
+build
+
+node_modules
+
+yarn.lock
+
+*.log
+*.cache
+.vite
+vite.config.ts
+
+.env
+.env.*
+coverage
