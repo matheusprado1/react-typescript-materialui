@@ -13,3 +13,13 @@ vite.config.ts
 .env
 .env.*
 coverage
+
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+
+README.md
+README-install.md
+.gitgnore
+
+eslint.config.js
