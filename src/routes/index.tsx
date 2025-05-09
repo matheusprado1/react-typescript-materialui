@@ -14,12 +14,8 @@ export const AppRoutes = () => {
         path: '/pagina-inicial',
         label: 'Página inicial',
       },
-      {
-        icon: 'star',
-        path: '/cidades',
-        label: 'Cidades',
-      },
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
