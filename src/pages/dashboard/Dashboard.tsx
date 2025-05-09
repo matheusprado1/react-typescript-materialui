@@ -1,5 +1,9 @@
-import { PageLayoutBase } from '../../shared/layouts/PageBaseLayout';
+import { PageLayoutBase } from '../../shared/layouts/PageLayoutBase';
 
 export const Dashboard = () => {
-  return <PageLayoutBase title="Página inicial">Testando</PageLayoutBase>;
+  return (
+    <PageLayoutBase title="Página inicial" toolbar={<>Barra de ferramentas</>}>
+      Testando
+    </PageLayoutBase>
+  );
 };
