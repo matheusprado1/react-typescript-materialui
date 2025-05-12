@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Icon, Paper, useTheme } from '@mui/material';
+import { Box, Button, Divider, Icon, Paper, Skeleton, useTheme } from '@mui/material';
 
-interface IDetailTools {
+interface IDetailToolsProps {
   newButtonText?: string;
 
   showNewButton?: boolean;
@@ -9,6 +9,12 @@ interface IDetailTools {
   showSaveButton?: boolean;
   showSaveAndBackButton?: boolean;
 
+  showNewButtonLoading?: boolean;
+  showBackButtonLoading?: boolean;
+  showDeleteButtonLoading?: boolean;
+  showSaveButtonLoading?: boolean;
+  showSaveAndBackButtonLoading?: boolean;
+
   whenClickInNew?: () => void;
   whenClickInBack?: () => void;
   whenClickInDelete?: () => void;
@@ -16,7 +22,7 @@ interface IDetailTools {
   whenClickInSaveAndBack?: () => void;
 }
 
-export const DetailTools: React.FC<IDetailTools> = ({
+export const DetailTools: React.FC<IDetailToolsProps> = ({
   newButtonText = 'Novo',
 
   showNewButton = true,
@@ -24,6 +30,12 @@ export const DetailTools: React.FC<IDetailTools> = ({
   showDeleteButton = true,
   showSaveButton = true,
   showSaveAndBackButton = false,
+
+  showNewButtonLoading = false,
+  showBackButtonLoading = false,
+  showDeleteButtonLoading = false,
+  showSaveButtonLoading = false,
+  showSaveAndBackButtonLoading = false,
 
   whenClickInNew,
   whenClickInBack,
@@ -44,7 +56,7 @@ export const DetailTools: React.FC<IDetailTools> = ({
       height={theme.spacing(5)}
       component={Paper}
     >
-      {showSaveButton && (
+      {showSaveButton && !showSaveButtonLoading && (
         <Button
           color="primary"
           disableElevation
@@ -55,7 +67,10 @@ export const DetailTools: React.FC<IDetailTools> = ({
           Salvar
         </Button>
       )}
-      {showSaveAndBackButton && (
+
+      {showSaveButtonLoading && <Skeleton width={110} height={60} />}
+
+      {showSaveAndBackButton && !showSaveAndBackButtonLoading && (
         <Button
           color="primary"
           disableElevation
@@ -66,7 +81,10 @@ export const DetailTools: React.FC<IDetailTools> = ({
           Salvar e voltar
         </Button>
       )}
-      {showDeleteButton && (
+
+      {showSaveAndBackButtonLoading && <Skeleton width={180} height={60} />}
+
+      {showDeleteButton && !showDeleteButtonLoading && (
         <Button
           color="primary"
           disableElevation
@@ -77,7 +95,10 @@ export const DetailTools: React.FC<IDetailTools> = ({
           Apagar
         </Button>
       )}
-      {showNewButton && (
+
+      {showDeleteButtonLoading && <Skeleton width={110} height={60} />}
+
+      {showNewButton && !showNewButtonLoading && (
         <Button
           color="primary"
           disableElevation
@@ -91,7 +112,9 @@ export const DetailTools: React.FC<IDetailTools> = ({
 
       <Divider variant="middle" orientation="vertical" />
 
-      {showBackButton && (
+      {showNewButtonLoading && <Skeleton width={110} height={60} />}
+
+      {showBackButton && !showBackButtonLoading && (
         <Button
           color="primary"
           disableElevation
@@ -102,6 +125,8 @@ export const DetailTools: React.FC<IDetailTools> = ({
           Voltar
         </Button>
       )}
+
+      {showBackButtonLoading && <Skeleton width={110} height={60} />}
     </Box>
   );
 };
