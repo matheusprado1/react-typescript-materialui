@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { ListingTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
+import { PersonsService } from '../../shared/services/api/persons/PersonsService';
 
 export const PersonsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,11 +12,19 @@ export const PersonsListing: React.FC = () => {
     return searchParams.get('search') || '';
   }, [searchParams]);
 
-  useEffect(() => { }, []);
+  useEffect(() => {
+    PersonsService.getAll(1, search).then(result => {
+      if (result instanceof Error) {
+        alert(result.message);
+      } else {
+        console.log(result);
+      }
+    });
+  }, [search]);
 
   return (
     <PageLayoutBase
-      title="Listagem de cidades"
+      title="Listagem de pessoas"
       toolbar={
         <ListingTools
           showInputSearch
