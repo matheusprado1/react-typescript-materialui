@@ -1,15 +1,17 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { ListingTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
 
-export const CityListing: React.FC = () => {
+export const PersonsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = useMemo(() => {
     return searchParams.get('search') || '';
   }, [searchParams]);
+
+  useEffect(() => { }, []);
 
   return (
     <PageLayoutBase
@@ -23,7 +25,7 @@ export const CityListing: React.FC = () => {
         />
       }
     >
-      Lista de cidades
+      Lista de pessoas
     </PageLayoutBase>
   );
 };
