@@ -1,0 +1,11 @@
+{
+  "persons": [
+    {
+      "id": 1,
+      "email": "person@mail.com",
+      "cityId": 1,
+      "firstName": "Person",
+      "lastName": "LastName"
+    }
+  ]
+}
