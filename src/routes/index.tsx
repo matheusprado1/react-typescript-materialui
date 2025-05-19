@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router';
 
 import { useDrawerContext } from '../shared/contexts';
-import { Dashboard } from '../pages';
+import { Dashboard, CityListing } from '../pages';
 
 export const AppRoutes = () => {
   const { setDrawerOptions } = useDrawerContext();
@@ -11,8 +11,13 @@ export const AppRoutes = () => {
     setDrawerOptions([
       {
         icon: 'home',
-        path: '/pagina-inicial',
+        path: '/home',
         label: 'Página inicial',
+      },
+      {
+        icon: 'location_city',
+        path: '/cities',
+        label: 'Cidades',
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -20,9 +25,11 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/pagina-inicial" element={<Dashboard />} />
+      <Route path="/home" element={<Dashboard />} />
 
-      <Route path="*" element={<Navigate to="/pagina-inicial" />} />
+      <Route path="/cities" element={<CityListing />} />
+
+      <Route path="*" element={<Navigate to="/home" />} />
     </Routes>
   );
 };
