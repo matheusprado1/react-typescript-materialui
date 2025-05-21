@@ -1,7 +1,7 @@
 import { Environment } from '../../../environment';
 import { Api } from '../axios-config';
 
-interface IPersonListing {
+export interface IPersonListing {
   id: number;
   email: string;
   cityId: number;
@@ -9,7 +9,7 @@ interface IPersonListing {
   lastName: string;
 }
 
-interface IPersonDetail {
+export interface IPersonDetail {
   id: number;
   email: string;
   cityId: number;
@@ -29,6 +29,7 @@ const getAll = async (page = 1, filter = ''): Promise<IPersonsWithTotalCount | E
     const { data, headers } = await Api.get(relativeUrl);
 
     if (data) {
+      console.log(headers);
       return {
         data,
         totalCount: Number(headers['x-total-count'] || Environment.LIMIT_OF_LINES),
