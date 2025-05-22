@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   LinearProgress,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -29,15 +30,20 @@ export const PersonsListing: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
 
+  console.log(totalCount);
   const search = useMemo(() => {
     return searchParams.get('search') || '';
+  }, [searchParams]);
+
+  const page = useMemo(() => {
+    return Number(searchParams.get('page') || '1');
   }, [searchParams]);
 
   useEffect(() => {
     setIsLoading(true);
 
     debounce(() => {
-      PersonsService.getAll(1, search).then(result => {
+      PersonsService.getAll(page, search).then(result => {
         setIsLoading(false);
 
         if (result instanceof Error) {
@@ -51,7 +57,7 @@ export const PersonsListing: React.FC = () => {
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  }, [search, page]);
 
   return (
     <PageLayoutBase
@@ -61,7 +67,9 @@ export const PersonsListing: React.FC = () => {
           showInputSearch
           newButtonText="Nova"
           searchText={search}
-          whenChangingSearchText={text => setSearchParams({ search: text }, { replace: true })}
+          whenChangingSearchText={text =>
+            setSearchParams({ search: text, page: '1' }, { replace: true })
+          }
         />
       }
     >
@@ -93,6 +101,19 @@ export const PersonsListing: React.FC = () => {
               <TableRow>
                 <TableCell colSpan={4}>
                   <LinearProgress variant="indeterminate" />
+                </TableCell>
+              </TableRow>
+            )}
+            {totalCount > 0 && totalCount > Environment.LIMIT_OF_LINES && (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <Pagination
+                    page={page}
+                    count={Math.ceil(totalCount / Environment.LIMIT_OF_LINES)}
+                    onChange={(_, newPage) =>
+                      setSearchParams({ search, page: newPage.toString() }, { replace: true })
+                    }
+                  />
                 </TableCell>
               </TableRow>
             )}
