@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  Icon,
+  IconButton,
   LinearProgress,
   Pagination,
   Paper,
@@ -11,7 +13,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import {
   PersonsService,
@@ -25,6 +27,7 @@ import { Environment } from '../../shared/environment';
 export const PersonsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
+  const navigate = useNavigate();
 
   const [rows, setRows] = useState<IPersonListing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +62,19 @@ export const PersonsListing: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, page]);
 
+  const handleDelete = (id: number) => {
+    if (confirm('Realmente deseja apagar?')) {
+      PersonsService.deleteById(id).then(result => {
+        if (result instanceof Error) {
+          alert(result.message);
+        } else {
+          setRows(oldRows => [...oldRows.filter(oldRow => oldRow.id !== id)]);
+          alert('Registro apagado com sucesso!');
+        }
+      });
+    }
+  };
+
   return (
     <PageLayoutBase
       title="Listagem de pessoas"
@@ -86,7 +102,14 @@ export const PersonsListing: React.FC = () => {
           <TableBody>
             {rows.map(row => (
               <TableRow key={row.id}>
-                <TableCell>Ações</TableCell>
+                <TableCell>
+                  <IconButton size="small" onClick={() => handleDelete(row.id)}>
+                    <Icon>delete</Icon>
+                  </IconButton>
+                  <IconButton size="small" onClick={() => navigate(`/persons/detail/${row.id}`)}>
+                    <Icon>edit</Icon>
+                  </IconButton>
+                </TableCell>
                 <TableCell>{row.firstName}</TableCell>
                 <TableCell>{row.lastName}</TableCell>
                 <TableCell>{row.email}</TableCell>

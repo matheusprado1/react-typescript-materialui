@@ -1,20 +1,6 @@
 {
   "persons": [
     {
-      "id": 1,
-      "email": "matheus.prado@mail.com",
-      "cityId": 1,
-      "firstName": "Matheus",
-      "lastName": "Prado"
-    },
-    {
-      "id": 2,
-      "email": "joao.silva@mail.com",
-      "cityId": 2,
-      "firstName": "João",
-      "lastName": "Silva"
-    },
-    {
       "id": 3,
       "email": "pedro.lima@mail.com",
       "cityId": 3,
