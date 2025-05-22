@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  LinearProgress,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
 } from '@mui/material';
@@ -17,14 +19,15 @@ import {
 import { ListingTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
 import { useDebounce } from '../../shared/hooks';
+import { Environment } from '../../shared/environment';
 
 export const PersonsListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
 
   const [rows, setRows] = useState<IPersonListing[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
 
   const search = useMemo(() => {
     return searchParams.get('search') || '';
@@ -40,10 +43,10 @@ export const PersonsListing: React.FC = () => {
         if (result instanceof Error) {
           alert(result.message);
         } else {
-          console.log(result);
+          console.log(result.data);
 
-          setTotalCount(result.totalCount);
           setRows(result.data);
+          setTotalCount(result.totalCount);
         }
       });
     });
@@ -82,6 +85,18 @@ export const PersonsListing: React.FC = () => {
               </TableRow>
             ))}
           </TableBody>
+
+          {totalCount === 0 && !isLoading && <caption>{Environment.EMPTY_LISTING}</caption>}
+
+          <TableFooter>
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <LinearProgress variant="indeterminate" />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableFooter>
         </Table>
       </TableContainer>
     </PageLayoutBase>
