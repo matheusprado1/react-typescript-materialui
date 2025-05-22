@@ -24,12 +24,12 @@ type IPersonsWithTotalCount = {
 
 const getAll = async (page = 1, filter = ''): Promise<IPersonsWithTotalCount | Error> => {
   try {
-    const relativeUrl = `/persons?_page=${page}&_limit=${Environment.LIMIT_OF_LINES}&fullName_like=${filter}`;
+    const relativeUrl = `/persons?_page=${page}&_limit=${Environment.LIMIT_OF_LINES}&firstName_like=${filter}`;
 
     const { data, headers } = await Api.get(relativeUrl);
 
     if (data) {
-      console.log(headers);
+      console.log(data);
       return {
         data,
         totalCount: Number(headers['x-total-count'] || Environment.LIMIT_OF_LINES),
@@ -45,9 +45,7 @@ const getAll = async (page = 1, filter = ''): Promise<IPersonsWithTotalCount | E
 
 const getById = async (id: number): Promise<IPersonDetail | Error> => {
   try {
-    const relativeUrl = `/persons/${id}`;
-
-    const { data } = await Api.get(relativeUrl);
+    const { data } = await Api.get(`/persons/${id}`);
 
     if (data) {
       return data;
