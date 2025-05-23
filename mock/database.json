@@ -8,27 +8,6 @@
       "lastName": "Lima"
     },
     {
-      "id": 4,
-      "email": "angela.souza@mail.com",
-      "cityId": 4,
-      "firstName": "Ângela",
-      "lastName": "Souza"
-    },
-    {
-      "id": 5,
-      "email": "ademar.costa@mail.com",
-      "cityId": 5,
-      "firstName": "Ademar",
-      "lastName": "Costa"
-    },
-    {
-      "id": 6,
-      "email": "juliana.moraes@mail.com",
-      "cityId": 6,
-      "firstName": "Juliana",
-      "lastName": "Moraes"
-    },
-    {
       "id": 7,
       "email": "bruna.alves@mail.com",
       "cityId": 7,

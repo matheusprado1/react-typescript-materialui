@@ -83,6 +83,7 @@ export const PersonsListing: React.FC = () => {
           showInputSearch
           newButtonText="Nova"
           searchText={search}
+          whenClickInNew={() => navigate('/persons/detail/new')}
           whenChangingSearchText={text =>
             setSearchParams({ search: text, page: '1' }, { replace: true })
           }
