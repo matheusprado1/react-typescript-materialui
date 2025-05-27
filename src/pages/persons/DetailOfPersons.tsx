@@ -1,10 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { Button, LinearProgress, TextField } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { DetailTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
 import { PersonsService } from '../../shared/services/api/persons/PersonsService';
-import { LinearProgress } from '@mui/material';
+
+type IFormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+const personSchema = yup.object().shape({
+  firstName: yup.string().required('O nome é obrigatório'),
+  lastName: yup.string().required('O sobrenome é obrigatório'),
+  email: yup.string().email('E-mail inválido').required('O e-mail é obrigatório'),
+});
 
 export const DetailOfPersons: React.FC = () => {
   const { id = 'new' } = useParams<'id'>();
@@ -12,6 +27,20 @@ export const DetailOfPersons: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<IFormData>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+    },
+    resolver: yupResolver(personSchema),
+  });
 
   useEffect(() => {
     if (id !== 'new') {
@@ -24,14 +53,18 @@ export const DetailOfPersons: React.FC = () => {
           navigate('/persons');
         } else {
           setName(result.firstName + ' ' + result.lastName);
+
+          setValue('firstName', result.firstName);
+          setValue('lastName', result.lastName);
+          setValue('email', result.email);
           console.log(result);
         }
       });
     }
-  }, [id]);
+  }, [id, setValue, navigate]);
 
-  const handleSave = () => {
-    console.log('Save');
+  const onSubmit = (data: IFormData) => {
+    console.log('Form data:', data);
   };
 
   const handleDelete = (id: number) => {
@@ -56,8 +89,8 @@ export const DetailOfPersons: React.FC = () => {
           showSaveAndBackButton
           showNewButton={id !== 'new'}
           showDeleteButton={id !== 'new'}
-          whenClickInSave={handleSave}
-          whenClickInSaveAndBack={handleSave}
+          whenClickInSave={handleSubmit(onSubmit)}
+          whenClickInSaveAndBack={handleSubmit(onSubmit)}
           whenClickInDelete={() => handleDelete(Number(id))}
           whenClickInNew={() => navigate('/persons/detail/new')}
           whenClickInBack={() => navigate('/persons')}
@@ -65,7 +98,60 @@ export const DetailOfPersons: React.FC = () => {
       }
     >
       {isLoading && <LinearProgress variant="indeterminate" />}
-      <p>Detalhe De Pessoas{id}</p>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+          marginTop: 20,
+          marginLeft: 20,
+          marginRight: 20,
+        }}
+      >
+        <Controller
+          name="firstName"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="Nome"
+              fullWidth
+              {...field}
+              error={!!errors.firstName}
+              helperText={errors.firstName?.message}
+            />
+          )}
+        />
+        <Controller
+          name="lastName"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="Sobrenome"
+              fullWidth
+              {...field}
+              error={!!errors.lastName}
+              helperText={errors.lastName?.message}
+            />
+          )}
+        />
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              {...field}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          )}
+        />
+        <Button type="submit">Salvar</Button>
+      </form>
     </PageLayoutBase>
   );
 };
