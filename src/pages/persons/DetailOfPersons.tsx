@@ -13,6 +13,7 @@ type IFormData = {
   firstName: string;
   lastName: string;
   email: string;
+  cityId: number;
 };
 
 const personSchema = yup.object().shape({
@@ -57,14 +58,34 @@ export const DetailOfPersons: React.FC = () => {
           setValue('firstName', result.firstName);
           setValue('lastName', result.lastName);
           setValue('email', result.email);
-          console.log(result);
+          // console.log(result);
         }
       });
     }
   }, [id, setValue, navigate]);
 
   const onSubmit = (data: IFormData) => {
-    console.log('Form data:', data);
+    setIsLoading(true);
+
+    if (id === 'new') {
+      PersonsService.create(data).then(result => {
+        setIsLoading(false);
+
+        if (result instanceof Error) {
+          alert(result.message);
+        } else {
+          navigate(`/persons/detail/${result}`);
+        }
+      });
+    } else {
+      PersonsService.updateById(Number(id), { id: Number(id), ...data }).then(result => {
+        setIsLoading(false);
+
+        if (result instanceof Error) {
+          alert(result.message);
+        }
+      });
+    }
   };
 
   const handleDelete = (id: number) => {
@@ -99,17 +120,7 @@ export const DetailOfPersons: React.FC = () => {
     >
       {isLoading && <LinearProgress variant="indeterminate" />}
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 16,
-          marginTop: 20,
-          marginLeft: 20,
-          marginRight: 20,
-        }}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="firstName"
           control={control}
@@ -150,7 +161,6 @@ export const DetailOfPersons: React.FC = () => {
             />
           )}
         />
-        <Button type="submit">Salvar</Button>
       </form>
     </PageLayoutBase>
   );

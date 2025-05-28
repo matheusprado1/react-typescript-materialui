@@ -29,7 +29,7 @@ const getAll = async (page = 1, filter = ''): Promise<IPersonsWithTotalCount | E
     const { data, headers } = await Api.get(relativeUrl);
 
     if (data) {
-      console.log(data);
+      // console.log(data);
       return {
         data,
         totalCount: Number(headers['x-total-count'] || Environment.LIMIT_OF_LINES),
