@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { Box, Grid, LinearProgress, Paper, TextField, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { PersonsService } from '../../shared/services/api/persons/PersonsService';
+import { useFormActions } from '../../shared/hooks';
 import { DetailTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
-import { PersonsService } from '../../shared/services/api/persons/PersonsService';
 
 type IFormData = {
   firstName: string;
@@ -29,16 +30,20 @@ export const DetailOfPersons: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('');
 
+  const { save, saveAndBack, isSaveAndBack } = useFormActions();
+
   const {
     control,
     handleSubmit,
-    setValue,
+    // setValue,
+    reset,
     formState: { errors },
   } = useForm<IFormData>({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
+      cityId: 0,
     },
     resolver: yupResolver(personSchema),
   });
@@ -55,39 +60,61 @@ export const DetailOfPersons: React.FC = () => {
         } else {
           setName(result.firstName);
 
-          setValue('firstName', result.firstName);
-          setValue('lastName', result.lastName);
-          setValue('email', result.email);
+          reset({
+            firstName: result.firstName,
+            lastName: result.lastName,
+            email: result.email,
+            cityId: result.cityId,
+          });
+
+          // setValue('firstName', result.firstName);
+          // setValue('lastName', result.lastName);
+          // setValue('email', result.email);
           // console.log(result);
         }
       });
+    } else {
+      reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        cityId: 0,
+      });
     }
-  }, [id, setValue, navigate]);
+  }, [id, reset, navigate]);
 
   const onSubmit = (data: IFormData) => {
     setIsLoading(true);
 
-    if (id === 'new') {
-      PersonsService.create(data).then(result => {
-        setIsLoading(false);
+    const afterSave = (result: number | void | Error) => {
+      setIsLoading(false);
 
-        if (result instanceof Error) {
-          alert(result.message);
-        } else {
-          setName(data.firstName);
+      if (result instanceof Error) {
+        alert(result.message);
+        return;
+      }
+
+      setName(data.firstName);
+
+      if (isSaveAndBack()) {
+        // Se foi "Salvar e Fechar", volta pra lista
+        navigate('/persons');
+      } else {
+        // Se foi só "Salvar"
+        if (id === 'new') {
+          // Navega para o detalhe do novo registro criado
           navigate(`/persons/detail/${result}`);
         }
-      });
-    } else {
-      PersonsService.updateById(Number(id), { id: Number(id), ...data }).then(result => {
-        setIsLoading(false);
+        // Se for edição, apenas atualiza o nome e fica na mesma página
+      }
+    };
 
-        if (result instanceof Error) {
-          alert(result.message);
-        } else {
-          setName(data.firstName);
-        }
-      });
+    if (id === 'new') {
+      PersonsService.create(data).then(result => afterSave(result));
+    } else {
+      PersonsService.updateById(Number(id), { id: Number(id), ...data }).then(result =>
+        afterSave(result)
+      );
     }
   };
 
@@ -113,8 +140,14 @@ export const DetailOfPersons: React.FC = () => {
           showSaveAndBackButton
           showNewButton={id !== 'new'}
           showDeleteButton={id !== 'new'}
-          whenClickInSave={handleSubmit(onSubmit)}
-          whenClickInSaveAndBack={handleSubmit(onSubmit)}
+          whenClickInSave={() => {
+            save();
+            handleSubmit(onSubmit)();
+          }}
+          whenClickInSaveAndBack={() => {
+            saveAndBack();
+            handleSubmit(onSubmit)();
+          }}
           whenClickInDelete={() => handleDelete(Number(id))}
           whenClickInNew={() => navigate('/persons/detail/new')}
           whenClickInBack={() => navigate('/persons')}
