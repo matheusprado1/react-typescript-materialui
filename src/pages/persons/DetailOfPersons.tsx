@@ -10,17 +10,18 @@ import { useFormActions } from '../../shared/hooks';
 import { DetailTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
 
-type IFormData = {
+interface IFormData {
   firstName: string;
   lastName: string;
   email: string;
   cityId: number;
-};
+}
 
-const personSchema = yup.object().shape({
-  firstName: yup.string().required('O nome é obrigatório'),
-  lastName: yup.string().required('O sobrenome é obrigatório'),
-  email: yup.string().email('E-mail inválido').required('O e-mail é obrigatório'),
+const formValidationSchema: yup.ObjectSchema<IFormData> = yup.object().shape({
+  firstName: yup.string().required().min(3),
+  lastName: yup.string().required().min(3),
+  email: yup.string().required().email(),
+  cityId: yup.number().required(),
 });
 
 export const DetailOfPersons: React.FC = () => {
@@ -45,7 +46,7 @@ export const DetailOfPersons: React.FC = () => {
       email: '',
       cityId: 0,
     },
-    resolver: yupResolver(personSchema),
+    resolver: yupResolver(formValidationSchema),
   });
 
   useEffect(() => {
@@ -66,11 +67,6 @@ export const DetailOfPersons: React.FC = () => {
             email: result.email,
             cityId: result.cityId,
           });
-
-          // setValue('firstName', result.firstName);
-          // setValue('lastName', result.lastName);
-          // setValue('email', result.email);
-          // console.log(result);
         }
       });
     } else {
@@ -83,7 +79,7 @@ export const DetailOfPersons: React.FC = () => {
     }
   }, [id, reset, navigate]);
 
-  const onSubmit = (data: IFormData) => {
+  const onSubmit = async (data: IFormData) => {
     setIsLoading(true);
 
     const afterSave = (result: number | void | Error) => {
@@ -97,24 +93,20 @@ export const DetailOfPersons: React.FC = () => {
       setName(data.firstName);
 
       if (isSaveAndBack()) {
-        // Se foi "Salvar e Fechar", volta pra lista
         navigate('/persons');
       } else {
-        // Se foi só "Salvar"
         if (id === 'new') {
-          // Navega para o detalhe do novo registro criado
           navigate(`/persons/detail/${result}`);
         }
-        // Se for edição, apenas atualiza o nome e fica na mesma página
       }
     };
 
     if (id === 'new') {
-      PersonsService.create(data).then(result => afterSave(result));
+      const result = await PersonsService.create(data);
+      afterSave(result);
     } else {
-      PersonsService.updateById(Number(id), { id: Number(id), ...data }).then(result =>
-        afterSave(result)
-      );
+      const result = await PersonsService.updateById(Number(id), { id: Number(id), ...data });
+      afterSave(result);
     }
   };
 
@@ -154,8 +146,6 @@ export const DetailOfPersons: React.FC = () => {
         />
       }
     >
-      {/* {isLoading && <LinearProgress variant="indeterminate" />} */}
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
           <Grid container direction="column" padding={2} spacing={2}>
