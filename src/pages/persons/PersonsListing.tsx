@@ -54,8 +54,8 @@ export const PersonsListing: React.FC = () => {
         } else {
           console.log(result.data);
 
-          setRows(result.data);
           setTotalCount(result.totalCount);
+          setRows(result.data);
         }
       });
     });
