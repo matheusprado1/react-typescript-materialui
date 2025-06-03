@@ -51,7 +51,7 @@ export const PersonsListing: React.FC = () => {
         if (result instanceof Error) {
           alert(result.message);
         } else {
-          console.log(result.data);
+          // console.log(result.data);
 
           setTotalCount(result.totalCount);
           setRows(result.data);
