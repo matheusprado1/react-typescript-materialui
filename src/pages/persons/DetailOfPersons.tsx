@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { PersonsService } from '../../shared/services/api/persons/PersonsService';
+import { AutoCompleteCity } from './components/AutoCompleteCity';
 import { useFormActions } from '../../shared/hooks';
 import { DetailTools } from '../../shared/components';
 import { PageLayoutBase } from '../../shared/layouts';
@@ -36,7 +37,6 @@ export const DetailOfPersons: React.FC = () => {
   const {
     control,
     handleSubmit,
-    // setValue,
     reset,
     formState: { errors },
   } = useForm<IFormData>({
@@ -44,7 +44,7 @@ export const DetailOfPersons: React.FC = () => {
       firstName: '',
       lastName: '',
       email: '',
-      cityId: 0,
+      cityId: undefined,
     },
     resolver: yupResolver(formValidationSchema),
   });
@@ -74,13 +74,14 @@ export const DetailOfPersons: React.FC = () => {
         firstName: '',
         lastName: '',
         email: '',
-        cityId: 0,
+        cityId: undefined,
       });
     }
   }, [id, reset, navigate]);
 
   const onSubmit = async (data: IFormData) => {
     setIsLoading(true);
+    console.log(data);
 
     const afterSave = (result: number | void | Error) => {
       setIsLoading(false);
@@ -223,13 +224,12 @@ export const DetailOfPersons: React.FC = () => {
                   name="cityId"
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      label="Cidade"
-                      fullWidth
-                      {...field}
+                    <AutoCompleteCity
+                      value={field.value}
+                      onChange={field.onChange}
+                      isExternalLoading={isLoading}
                       error={!!errors.cityId}
                       helperText={errors.cityId?.message}
-                      disabled={isLoading}
                     />
                   )}
                 />
