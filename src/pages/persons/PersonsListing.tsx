@@ -33,7 +33,6 @@ export const PersonsListing: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
 
-  console.log(totalCount);
   const search = useMemo(() => {
     return searchParams.get('search') || '';
   }, [searchParams]);
