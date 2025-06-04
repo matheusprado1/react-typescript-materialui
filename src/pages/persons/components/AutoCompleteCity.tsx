@@ -52,6 +52,7 @@ export const AutoCompleteCity: React.FC<IAutoCompleteCityProps> = ({
     <Autocomplete
       openText="Abrir"
       closeText="Fechar"
+      clearText="Limpar"
       noOptionsText="Sem opções"
       loadingText="Carregando..."
       disablePortal
