@@ -45,6 +45,7 @@ export const AutoCompleteCity: React.FC<IAutoCompleteCityProps> = ({
         }
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   return (
