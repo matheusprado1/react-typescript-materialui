@@ -1,5 +1,5 @@
-import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { CitiesService } from '../../../shared/services/api/cities/CitiesService';
 import { useDebounce } from '../../../shared/hooks';
 
