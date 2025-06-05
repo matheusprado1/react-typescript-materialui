@@ -75,5 +75,8 @@
       "name": "Belo Horizonte",
       "id": 6
     }
-  ]
+  ],
+  "auth": {
+    "accessToken": "aaaaaaaa.123456789.bbbbbbbb"
+  }
 }
