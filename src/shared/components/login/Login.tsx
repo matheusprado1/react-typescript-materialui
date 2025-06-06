@@ -15,7 +15,7 @@ import { useAuthContext } from '../../contexts';
 
 const loginSchema = yup.object().shape({
   email: yup.string().email().required(),
-  password: yup.string().required().min(5),
+  password: yup.string().required().min(6),
 });
 
 interface ILoginProps {
