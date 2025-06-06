@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { AuthService } from '../services/api/auth/AuthService';
+import { PersonsService } from '../services/api/persons/PersonsService';
 
 interface IAuthContextData {
   logout: () => void;
@@ -24,6 +25,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
     if (accessToken) {
       setAccessToken(JSON.parse(accessToken));
+      PersonsService.getAll();
     } else {
       setAccessToken(undefined);
     }

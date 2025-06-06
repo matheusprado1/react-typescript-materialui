@@ -18,9 +18,9 @@ type ICitiesWithTotalCount = {
 
 const getAll = async (page = 1, filter = ''): Promise<ICitiesWithTotalCount | Error> => {
   try {
-    const relativeUrl = `/cities?_page=${page}&_limit=${Environment.LIMIT_OF_LINES}&name_like=${filter}`;
+    const relativeUrl = `/cities?page=${page}&limit=${Environment.LIMIT_OF_LINES}&filter=${filter}`;
 
-    const { data, headers } = await Api.get(relativeUrl);
+    const { data, headers } = await Api().get(relativeUrl);
 
     if (data) {
       return {
@@ -38,7 +38,7 @@ const getAll = async (page = 1, filter = ''): Promise<ICitiesWithTotalCount | Er
 
 const getById = async (id: number): Promise<ICityDetail | Error> => {
   try {
-    const { data } = await Api.get(`/cities/${id}`);
+    const { data } = await Api().get(`/cities/${id}`);
 
     if (data) {
       return data;
@@ -53,10 +53,10 @@ const getById = async (id: number): Promise<ICityDetail | Error> => {
 
 const create = async (cityData: Omit<ICityDetail, 'id'>): Promise<number | Error> => {
   try {
-    const { data } = await Api.post<ICityDetail>('/cities', cityData);
+    const { data } = await Api().post<number>('/cities', cityData);
 
     if (data) {
-      return data.id;
+      return data;
     }
 
     return new Error('Erro ao criar o registro');
@@ -68,7 +68,7 @@ const create = async (cityData: Omit<ICityDetail, 'id'>): Promise<number | Error
 
 const updateById = async (id: number, cityData: ICityDetail): Promise<void | Error> => {
   try {
-    await Api.put(`/cities/${id}`, cityData);
+    await Api().put(`/cities/${id}`, cityData);
   } catch (error) {
     console.error(error);
     return new Error((error as { message: string }).message || 'Erro ao atualizar o registro');
@@ -77,7 +77,7 @@ const updateById = async (id: number, cityData: ICityDetail): Promise<void | Err
 
 const deleteById = async (id: number): Promise<void | Error> => {
   try {
-    await Api.delete(`/cities/${id}`);
+    await Api().delete(`/cities/${id}`);
   } catch (error) {
     console.error(error);
     return new Error((error as { message: string }).message || 'Erro ao apagar o registro');
